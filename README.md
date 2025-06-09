@@ -8,6 +8,6 @@ Attempt to embed a google form for Farms to collect production data
 //
 
 Create different pages:
-About: {About,Missing, Schedule, Meet the Team}
-Insights: {KPIs,Urban Agriculture: Indoor Vertical Farming, Program FAQ & Discussions}
-Data: Embed Visualizations using PowerBI
+About: Consolidation of the {About,Missing, Schedule, Meet the Team} pages
+Insights: Consolidation of the {KPIs,Urban Agriculture: Indoor Vertical Farming, Program FAQ & Discussions}
+Data: Include functionality to Embed Visualizations using PowerBI, 

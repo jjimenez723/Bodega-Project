@@ -184,4 +184,56 @@ Map Controls: z-index: 997
 - **Scrollable Content**: Control panel content remains scrollable
 - **Z-Index Hierarchy**: Control panel stays behind navigation bar
 
+### 9. ✅ KPI Builder Gear Button Fixed
+**Problem**: The gear button on the KPI Builder page wasn't opening the column options control pane.
+
+**Solution**: 
+- Fixed offcanvas implementation with proper CSS transitions
+- Added backdrop for better UX
+- Implemented proper show/hide functionality
+- Added keyboard support (Escape key to close)
+- Added click-outside-to-close functionality
+- Improved visual styling and animations
+- Fixed desktop compatibility issues
+- Replaced checkboxes with modern toggle sliders
+
+**Files Modified**: `kpi-builder.html`
+
+## Technical Details
+
+### Offcanvas Features
+- **Smooth Animations**: CSS transitions for slide-in effect
+- **Backdrop**: Semi-transparent overlay for better focus
+- **Keyboard Support**: Escape key to close
+- **Click Outside**: Click backdrop to close
+- **Proper Z-Index**: Ensures offcanvas appears above content
+- **Body Scroll Lock**: Prevents background scrolling when open
+- **Desktop Compatible**: Works on all screen sizes
+- **Modern Toggle Sliders**: Replaced checkboxes with sleek toggle switches
+- **Responsive Design**: Adapts width for different screen sizes
+
+### 10. ✅ Map Layer Toggles Enhanced
+**Problem**: The Fresh Food and Fast Food layer toggles on the Map page used basic checkboxes instead of the modern UI.
+
+**Solution**: 
+- Replaced checkboxes with beautiful toggle buttons matching KPI Builder design
+- Added smooth animations and hover effects
+- Implemented active state styling with brand colors
+- Added responsive design for mobile devices
+- Updated JavaScript to handle toggle button clicks instead of checkbox changes
+
+**Files Modified**: 
+- `Map/map.html`
+- `script.js`
+
+## Technical Details
+
+### Map Layer Toggle Features
+- **Consistent Design**: Matches KPI Builder role toggle styling
+- **Smooth Animations**: CSS transitions with cubic-bezier easing
+- **Active States**: Clear visual feedback for enabled layers
+- **Hover Effects**: Interactive feedback for better UX
+- **Responsive Design**: Adapts to different screen sizes
+- **Brand Colors**: Uses #015941 for active states
+
 All changes maintain the existing design aesthetic while significantly improving usability and fixing the reported issues. 

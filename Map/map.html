@@ -14,6 +14,74 @@
   <!-- Your custom styles -->
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="../assets/css/nav-mobile.css" />
+  
+  <style>
+    /* Beautiful Layer Toggle Styles for Map */
+    .layer-toggle-group {
+      display: flex;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 1px solid #e9ecef;
+      margin-bottom: 1rem;
+    }
+    
+    .layer-toggle {
+      position: relative;
+      padding: 10px 20px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #6c757d;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 100px;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .layer-toggle:hover {
+      color: #015941;
+      background: rgba(1, 89, 65, 0.1);
+    }
+    
+    .layer-toggle.active {
+      background: #015941;
+      color: white;
+      box-shadow: 0 2px 8px rgba(1, 89, 65, 0.3);
+    }
+    
+    .layer-toggle.active:hover {
+      background: #004684;
+      transform: translateY(-1px);
+    }
+    
+    /* Responsive design for layer toggles */
+    @media (max-width: 768px) {
+      .layer-toggle-group {
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px;
+      }
+      
+      .layer-toggle {
+        min-width: 80px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .layer-toggle {
+        min-width: 70px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body class="map-page">
   <header class="sticky-header">
@@ -56,16 +124,10 @@
       <div class="panel-section">
         <h3 class="panel-section-title">Layers</h3>
         <div class="controls" aria-label="Layer toggles">
-          <label class="toggle-label">
-            <input type="checkbox" id="produceToggle" checked>
-            <span class="long-label">Fresh Food</span>
-            <span class="short-label">Fresh</span>
-          </label>
-          <label class="toggle-label">
-            <input type="checkbox" id="fastfoodToggle" checked>
-            <span class="long-label">Fast Food</span>
-            <span class="short-label">Fast</span>
-          </label>
+          <div class="layer-toggle-group">
+            <button class="layer-toggle active" data-layer="fresh" id="produceToggle">Fresh Food</button>
+            <button class="layer-toggle active" data-layer="fast" id="fastfoodToggle">Fast Food</button>
+          </div>
         </div>
         <div class="controls" aria-label="Heatmap controls">
           <div class="slider-compact-row">

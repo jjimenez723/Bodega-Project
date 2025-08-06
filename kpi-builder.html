@@ -115,6 +115,179 @@
         font-size: 0.85rem;
       }
     }
+    
+    /* Offcanvas styles for column options */
+    #columnOptions.offcanvas {
+      position: fixed !important;
+      top: 0 !important;
+      right: 0 !important;
+      width: 400px !important;
+      height: 100vh !important;
+      background: white !important;
+      border-left: 1px solid #dee2e6 !important;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.1) !important;
+      z-index: 1050 !important;
+      transform: translateX(100%) !important;
+      transition: transform 0.3s ease-in-out !important;
+      visibility: visible !important;
+      display: block !important;
+    }
+    
+    #columnOptions.offcanvas.show {
+      transform: translateX(0) !important;
+    }
+    
+    /* Modern toggle slider styles */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: #015941;
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    input:disabled + .toggle-slider {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    
+    input:disabled:checked + .toggle-slider {
+      background-color: #6c757d;
+    }
+    
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .toggle-item:last-child {
+      border-bottom: none;
+    }
+    
+    .toggle-label {
+      flex: 1;
+      font-size: 0.9rem;
+      color: #333;
+    }
+    
+    .toggle-label.disabled {
+      color: #6c757d;
+    }
+    
+    #columnOptions .offcanvas-header {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 1rem !important;
+      border-bottom: 1px solid #dee2e6 !important;
+    }
+    
+    #columnOptions .offcanvas-body {
+      padding: 1rem !important;
+      overflow-y: auto !important;
+      height: calc(100vh - 80px) !important;
+    }
+    
+    #columnOptions .offcanvas-title {
+      margin: 0 !important;
+      font-size: 1.1rem !important;
+      font-weight: 600 !important;
+    }
+    
+    #columnOptions .btn-close {
+      background: none !important;
+      border: none !important;
+      font-size: 1.5rem !important;
+      cursor: pointer !important;
+      padding: 0 !important;
+      width: 30px !important;
+      height: 30px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    #columnOptions .btn-close:hover {
+      background: #f8f9fa !important;
+      border-radius: 4px !important;
+    }
+    
+    /* Backdrop for offcanvas */
+    .offcanvas-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 1040;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    .offcanvas-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Prevent body scroll when offcanvas is open */
+    body.offcanvas-open {
+      overflow: hidden;
+    }
+    
+    /* Responsive offcanvas for desktop */
+    @media (min-width: 768px) {
+      #columnOptions.offcanvas {
+        width: 450px !important;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      #columnOptions.offcanvas {
+        width: 100% !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -372,7 +545,7 @@
   <div class="offcanvas offcanvas-end" tabindex="-1" id="columnOptions">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title">Column Options</h5>
-      <button type="button" class="btn-close" id="closeCanvas" aria-label="Close"></button>
+      <button type="button" class="btn-close" id="closeCanvas" aria-label="Close">×</button>
     </div>
     <div class="offcanvas-body">
       <h6 class="mb-2">Column Visibility</h6>
@@ -382,6 +555,9 @@
       <div id="cropToggles" style="max-height:200px;overflow:auto;"></div>
     </div>
   </div>
+  
+  <!-- Backdrop for offcanvas -->
+  <div class="offcanvas-backdrop" id="offcanvasBackdrop"></div>
 
   <nav id="mobileNav" class="offcanvas" aria-label="Site">
     <a href="index.html">Home</a>
@@ -533,8 +709,15 @@
     container.innerHTML='';
     colHeaders.forEach((h,i)=>{
       const id='chk_'+i;
+      const isDisabled = h==='Produce'||h==='Category';
       container.insertAdjacentHTML('beforeend',
-      `<div class="form-check"><input class="form-check-input" type="checkbox" ${h==='Produce'||h==='Category'?'checked disabled':''} checked id="${id}"> <label class="form-check-label" for="${id}">${h}</label></div>`);
+      `<div class="toggle-item">
+        <label class="toggle-switch">
+          <input type="checkbox" ${isDisabled?'checked disabled':''} checked id="${id}">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label ${isDisabled?'disabled':''}">${h}</span>
+      </div>`);
       container.lastElementChild.querySelector('input').addEventListener('change',e=>{
         if(e.target.disabled) return;
         if(e.target.checked) { userVisible.add(h); userHidden.delete(h); } else { userHidden.add(h); userVisible.delete(h); }
@@ -552,9 +735,46 @@
   document.addEventListener('click',e=>{if(e.target.classList.contains('accordion-button')){const b=e.target,c=b.parentElement.nextElementSibling;b.classList.toggle('collapsed');c.classList.toggle('show');}});
 
   // Offcanvas show/hide
-  const offcanvas=document.getElementById('columnOptions');
-  document.getElementById('gearBtn').onclick=()=>offcanvas.classList.add('show');
-  document.getElementById('closeCanvas').onclick=()=>offcanvas.classList.remove('show');
+  const offcanvas = document.getElementById('columnOptions');
+  const backdrop = document.getElementById('offcanvasBackdrop');
+  
+  console.log('Offcanvas element:', offcanvas);
+  console.log('Backdrop element:', backdrop);
+  
+  function openOffcanvas() {
+    offcanvas.classList.add('show');
+    backdrop.classList.add('show');
+    document.body.classList.add('offcanvas-open');
+    console.log('Offcanvas opened:', offcanvas.classList.contains('show'));
+    console.log('Offcanvas content:', offcanvas.innerHTML);
+    console.log('Column toggles:', document.getElementById('columnToggles').innerHTML);
+    console.log('Crop toggles:', document.getElementById('cropToggles').innerHTML);
+  }
+  
+  function closeOffcanvas() {
+    offcanvas.classList.remove('show');
+    backdrop.classList.remove('show');
+    document.body.classList.remove('offcanvas-open');
+  }
+  
+  // Ensure gear button works on all devices
+  const gearBtn = document.getElementById('gearBtn');
+  if (gearBtn) {
+    gearBtn.onclick = openOffcanvas;
+    console.log('Gear button found and configured');
+  } else {
+    console.error('Gear button not found!');
+  }
+  document.getElementById('closeCanvas').onclick = closeOffcanvas;
+  backdrop.onclick = closeOffcanvas;
+  
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && offcanvas.classList.contains('show')) {
+      closeOffcanvas();
+    }
+  });
+  
   enableDrag(offcanvas, offcanvas.querySelector('.offcanvas-header'));
 
   // Load CSV & init Handsontable
@@ -596,6 +816,11 @@
       buildCropToggles();
       buildColumnToggles();
       applyRowFilter();
+      
+      // Ensure gear button works after content is loaded
+      console.log('Content loaded, gear button should work now');
+      console.log('Column toggles built:', document.getElementById('columnToggles').children.length);
+      console.log('Crop toggles built:', document.getElementById('cropToggles').children.length);
     }
   });
   // Role toggle listeners
@@ -627,12 +852,18 @@
     crops.forEach(c=>{
       const id='crop_'+c.replace(/[^a-z0-9]/gi,'_');
       container.insertAdjacentHTML('beforeend',
-        `<div class="form-check"><input class="form-check-input" type="checkbox" checked id="${id}"> <label class="form-check-label" for="${id}">${c}</label></div>`);
+        `<div class="toggle-item">
+          <label class="toggle-switch">
+            <input type="checkbox" checked id="${id}">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">${c}</span>
+        </div>`);
       container.lastElementChild.querySelector('input').addEventListener('change',e=>{
         if(e.target.checked) selectedCrops.add(c); else selectedCrops.delete(c);
         applyRowFilter();
-        const roleSel=document.querySelector('input[name="role"]:checked');
-        if(roleSel) recalcTotals(roleSel.value);
+        const roleSel=document.querySelector('.role-toggle.active');
+        if(roleSel) recalcTotals(roleSel.dataset.role);
       });
     });
   }

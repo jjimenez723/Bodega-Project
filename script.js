@@ -450,13 +450,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 8) Display Newark border from municipal boundaries GeoJSON
 
-    // 9) Layer toggles for checkboxes
+    // 9) Layer toggles for beautiful toggle buttons
     const produceToggle = document.getElementById('produceToggle');
     const fastfoodToggle = document.getElementById('fastfoodToggle');
 
     function updateProduceLayer() {
       if (!produceHeat || !produceCluster) return;
-      if (produceToggle && produceToggle.checked) {
+      if (produceToggle && produceToggle.classList.contains('active')) {
         produceHeat.addTo(map);
         produceCluster.addTo(map);
       } else {
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     function updateFastFoodLayer() {
       if (!fastFoodHeat || !fastFoodCluster) return;
-      if (fastfoodToggle && fastfoodToggle.checked) {
+      if (fastfoodToggle && fastfoodToggle.classList.contains('active')) {
         fastFoodHeat.addTo(map);
         fastFoodCluster.addTo(map);
       } else {
@@ -474,8 +474,20 @@ document.addEventListener('DOMContentLoaded', function() {
         map.removeLayer(fastFoodCluster);
       }
     }
-    if (produceToggle) produceToggle.addEventListener('change', updateProduceLayer);
-    if (fastfoodToggle) fastfoodToggle.addEventListener('change', updateFastFoodLayer);
+    
+    // Add click event listeners for toggle buttons
+    if (produceToggle) {
+      produceToggle.addEventListener('click', () => {
+        produceToggle.classList.toggle('active');
+        updateProduceLayer();
+      });
+    }
+    if (fastfoodToggle) {
+      fastfoodToggle.addEventListener('click', () => {
+        fastfoodToggle.classList.toggle('active');
+        updateFastFoodLayer();
+      });
+    }
 
     // Ensure layers are updated after data loads
     function tryInitLayerToggles() {

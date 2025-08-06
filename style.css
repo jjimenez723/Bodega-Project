@@ -8,7 +8,7 @@ body {
 .sticky-header {
   position: sticky;
   top: 0;
-  z-index: 200;
+  z-index: 1000;
   background: #fff;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.03);
 }
@@ -1079,7 +1079,7 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  z-index: 1200;
+  z-index: 999;
   transition: width 0.3s cubic-bezier(.4,0,.2,1), padding 0.3s, box-shadow 0.3s, min-width 0.3s;
   position: relative;
   overflow-y: auto;
@@ -1087,6 +1087,28 @@ button:active {
   top: 0;
   left: 0;
   margin: 0;
+  resize: horizontal;
+}
+
+/* Custom resize handle styling */
+#resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 998;
+  transition: background 0.2s ease;
+}
+
+#resize-handle:hover {
+  background: rgba(1, 89, 65, 0.2);
+}
+
+#resize-handle:active {
+  background: rgba(1, 89, 65, 0.4);
 }
 #control-panel.collapsed {
   width: 0 !important;
@@ -1109,7 +1131,7 @@ button:active {
   color: #fff;
   font-size: 1.7rem;
   cursor: pointer;
-  z-index: 2001;
+  z-index: 998;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
   display: flex;
   align-items: center;
@@ -1237,6 +1259,7 @@ input[type="text"], input[type="number"], select {
     font-size: 0.9em !important;
     position: relative !important;
     z-index: 1000 !important;
+    resize: none !important;
   }
   #control-panel.collapsed {
     height: 0 !important;
@@ -1261,6 +1284,11 @@ input[type="text"], input[type="number"], select {
     width: 100% !important;
     height: 100% !important;
     min-height: 60vh !important;
+  }
+  
+  /* Disable resize handle on mobile */
+  #resize-handle {
+    display: none !important;
   }
 }
 
@@ -1558,13 +1586,16 @@ header, .sticky-header {
 .social-link {
   color: #015941;
   background: #f1f5f9;
-  padding: 0.4em 1em;
+  padding: 0.4em 0.8em;
   border-radius: 0.5em;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: background 0.2s, color 0.2s;
   border: 1.5px solid #015941;
+  display: inline-block;
+  min-width: fit-content;
+  text-align: center;
 }
 .social-link:hover {
   background: #015941;

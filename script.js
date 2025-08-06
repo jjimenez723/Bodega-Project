@@ -142,13 +142,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1) Initialize map
     const isMapPage = document.body.classList.contains('map-page');
     const map = L.map('map', {
-      minZoom: 12,
-      maxZoom: 16,
+      minZoom: 10,
+      maxZoom: 18,
       center: [40.7357, -74.1724],
       zoom: 13,
       maxBounds: L.latLngBounds([40.65, -74.30], [40.85, -74.05]),
-      maxBoundsViscosity: 1.0,
-      scrollWheelZoom: isMapPage ? false : true // Only disable scroll wheel zoom on map page
+      maxBoundsViscosity: 0.8,
+      scrollWheelZoom: true,
+      doubleClickZoom: true,
+      touchZoom: true,
+      bounceAtZoomLimits: true
     });
     window.map = map;
 

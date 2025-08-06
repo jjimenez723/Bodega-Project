@@ -13,10 +13,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Your custom styles -->
   <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../assets/css/nav-mobile.css" />
 </head>
 <body class="map-page">
   <header class="sticky-header">
     <nav>
+      <button class="hamburger" id="navToggle" aria-label="Open navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
       <ul class="menu">
         <li><a href="../index.html">Home</a></li>
         <li><a href="../story.html">Story</a></li>
@@ -143,5 +147,18 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
   <!-- Your map logic -->
   <script src="../script.js"></script>
+  <script src="../assets/js/nav-mobile.js"></script>
+  <script src="../assets/js/mobile-enhancements.js"></script>
+
+  <nav id="mobileNav" class="offcanvas" aria-label="Site">
+    <a href="../index.html">Home</a>
+    <a href="../story.html">Story</a>
+    <a href="../gallery.html">Gallery</a>
+    <a href="../kpi-builder.html">KPI Builder</a>
+    <a href="map.html">Fast vs. Fresh Food Map</a>
+    <a href="../index.html#kpis">Data Visualization</a>
+    <a href="../index.html#team">Team</a>
+  </nav>
+  <div id="navOverlay" class="overlay" hidden></div>
 </body>
 </html>

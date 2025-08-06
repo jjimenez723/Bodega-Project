@@ -43,6 +43,149 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  // VS Code-style panel resizing
+  const controlPanel = document.getElementById('control-panel');
+  console.log('Control panel found:', controlPanel);
+  if (controlPanel) {
+    let isResizing = false;
+    let startX, startWidth;
+    
+    // Add resize handle element
+    const resizeHandle = document.createElement('div');
+    resizeHandle.id = 'resize-handle';
+    resizeHandle.style.cssText = `
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 6px;
+      height: 100%;
+      background: transparent;
+      cursor: col-resize;
+      z-index: 998;
+      transition: background 0.2s ease;
+    `;
+    
+    // Add hover effect
+    resizeHandle.addEventListener('mouseenter', () => {
+      resizeHandle.style.background = 'rgba(1, 89, 65, 0.2)';
+    });
+    
+    resizeHandle.addEventListener('mouseleave', () => {
+      if (!isResizing) {
+        resizeHandle.style.background = 'transparent';
+      }
+    });
+    
+    // Insert the resize handle
+    controlPanel.appendChild(resizeHandle);
+    
+    // Add a subtle visual indicator that the panel is resizable
+    const resizeIndicator = document.createElement('div');
+    resizeIndicator.style.cssText = `
+      position: absolute;
+      top: 50%;
+      right: 2px;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 20px;
+      background: rgba(1, 89, 65, 0.3);
+      border-radius: 1px;
+      pointer-events: none;
+      z-index: 997;
+    `;
+    controlPanel.appendChild(resizeIndicator);
+    
+    const startResize = (e) => {
+      e.preventDefault();
+      isResizing = true;
+      startX = e.clientX || (e.touches && e.touches[0].clientX);
+      startWidth = controlPanel.offsetWidth;
+      
+      // Visual feedback
+      resizeHandle.style.background = 'rgba(1, 89, 65, 0.4)';
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      
+      // Add event listeners
+      document.addEventListener('mousemove', resize);
+      document.addEventListener('mouseup', stopResize);
+      document.addEventListener('touchmove', resize, { passive: false });
+      document.addEventListener('touchend', stopResize);
+    };
+    
+    const resize = (e) => {
+      if (!isResizing) return;
+      
+      e.preventDefault();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const deltaX = clientX - startX;
+      const newWidth = Math.max(250, Math.min(600, startWidth + deltaX));
+      
+      controlPanel.style.width = newWidth + 'px';
+      
+      // Invalidate map size to adjust to new panel width
+      if (window.map && typeof window.map.invalidateSize === 'function') {
+        window.map.invalidateSize();
+      }
+    };
+    
+    const stopResize = () => {
+      isResizing = false;
+      
+      // Remove visual feedback
+      resizeHandle.style.background = 'transparent';
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      
+      // Remove event listeners
+      document.removeEventListener('mousemove', resize);
+      document.removeEventListener('mouseup', stopResize);
+      document.removeEventListener('touchmove', resize);
+      document.removeEventListener('touchend', stopResize);
+      
+      // Final map size adjustment
+      if (window.map && typeof window.map.invalidateSize === 'function') {
+        setTimeout(() => window.map.invalidateSize(), 100);
+      }
+    };
+    
+    // Add event listeners to the resize handle
+    resizeHandle.addEventListener('mousedown', startResize);
+    resizeHandle.addEventListener('touchstart', startResize, { passive: false });
+    
+    // Also allow resizing by clicking on the right edge of the panel
+    controlPanel.addEventListener('mousedown', (e) => {
+      const rect = controlPanel.getBoundingClientRect();
+      const handleWidth = 10; // Slightly larger touch area
+      if (e.clientX >= rect.right - handleWidth && e.clientX <= rect.right) {
+        startResize(e);
+      }
+    });
+    
+    controlPanel.addEventListener('touchstart', (e) => {
+      const rect = controlPanel.getBoundingClientRect();
+      const handleWidth = 20; // Larger touch target for mobile
+      const touchX = e.touches[0].clientX;
+      if (touchX >= rect.right - handleWidth && touchX <= rect.right) {
+        startResize(e);
+      }
+    });
+    
+    // Disable resize on mobile devices
+    if (window.innerWidth <= 700) {
+      resizeHandle.style.display = 'none';
+    }
+    
+    // Re-enable resize when screen size changes
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 700) {
+        resizeHandle.style.display = 'block';
+      } else {
+        resizeHandle.style.display = 'none';
+      }
+    });
+  }
+  
   // Enhanced carousel for mobile
   const carousel = document.getElementById('image-carousel');
   if (carousel) {
